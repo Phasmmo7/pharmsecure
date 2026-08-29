@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useStore, ACCOUNTS } from '../store.jsx';
 import { Icon, cx, AnimatedNumber, Reveal } from '../components/ui.jsx';
+import CapsuleLogo from '../components/CapsuleLogo.jsx';
 
 function BrandMark({ size = 64 }) {
   return (
     <span className="relative grid place-items-center" style={{ width: size, height: size }}>
       <span className="absolute inset-0 rounded-2xl bg-brand-500/20 blur-xl animate-floata" />
-      <span className="relative grid place-items-center rounded-2xl bg-gradient-to-br from-brand-400 to-brand-500 text-void shadow-[0_0_36px_-4px_rgba(34,211,238,.65)]"
+      <span className="relative grid place-items-center rounded-2xl bg-gradient-to-br from-brand-400/10 to-brand-500/10 shadow-[0_0_36px_-4px_rgba(34,211,238,.65)]"
         style={{ width: size * 0.72, height: size * 0.72 }}>
-        <svg width={size * 0.36} height={size * 0.36} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-          <path d="M12 3v18M3 12h18" />
-        </svg>
+        <CapsuleLogo size={size * 0.6} />
       </span>
     </span>
   );

@@ -1,6 +1,7 @@
 import { useStore, ACCOUNTS } from '../store.jsx';
 import { Icon } from '../components/icons.jsx';
 import { cx } from '../components/ui.jsx';
+import CapsuleLogo from '../components/CapsuleLogo.jsx';
 
 const ROLE_META = {
   'Hospital Admin': { icon: 'box', tag: 'Sees the full ledger · redistributes surplus', tone: 'brand' },
@@ -27,8 +28,8 @@ export default function Login() {
         <div className="pointer-events-none absolute -bottom-24 -left-24 size-80 rounded-full bg-brand-500/20 blur-3xl" />
 
         <div className="relative flex items-center gap-3">
-          <span className="grid size-11 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 3v18M3 12h18" /></svg>
+          <span className="grid place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur px-2 py-1.5">
+            <CapsuleLogo size={38} />
           </span>
           <div>
             <p className="text-lg font-bold tracking-tight">PharmSecure</p>

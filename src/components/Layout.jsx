@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useStore } from '../store.jsx';
 import { Icon, cx } from './ui.jsx';
+import CapsuleLogo from './CapsuleLogo.jsx';
 import { useState } from 'react';
 
 const NAV = [
@@ -15,10 +16,8 @@ const NAV = [
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="relative grid size-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-500 text-void shadow-[0_0_16px_-2px_rgba(34,211,238,.5)]">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-          <path d="M12 3v18M3 12h18" />
-        </svg>
+      <span className="relative grid place-items-center rounded-xl bg-gradient-to-br from-brand-400/10 to-brand-500/10 shadow-[0_0_16px_-2px_rgba(34,211,238,.5)] px-1 py-0.5">
+        <CapsuleLogo size={32} />
       </span>
       <div className="leading-tight">
         <p className="text-sm font-bold tracking-tight text-mist-50">
