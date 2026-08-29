@@ -25,39 +25,60 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="animate-fade-up space-y-6">
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-        <StatCard label="Rescuable surplus" value={<AnimatedNumber value={s.pendingSurplus} />} sub="units forecast to expire" icon="droplet" />
-        <StatCard label="Batches at risk" value={<AnimatedNumber value={s.atRisk} />} sub="flagged by expiry intelligence" icon="alert" tone="amber" />
-        <StatCard label="Checks today" value={<AnimatedNumber value={s.scansToday} />} sub="authenticity verifications" icon="scan" />
-        <StatCard label="Transfers live" value={<AnimatedNumber value={s.activeTransfers} />} sub={`${fmtNum(s.recovered)} units recovered`} icon="truck" tone="violet" />
+    <div className="space-y-6">
+      {/* Document Header */}
+      <div className="border border-border-low bg-surface-panel p-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Authorized Access Only</p>
+            <h1 className="mt-1 text-3xl font-bold uppercase tracking-tight text-on-surface">Index: Protocol Zero</h1>
+            <p className="mt-1 font-mono text-[11px] text-on-surface-variant">Record ID: PS-2024-882 · <span className="text-primary">{s.orgCount} facilities</span> connected</p>
+          </div>
+          <div className="text-right">
+            <p className="font-mono text-[10px] text-text-secondary">LIVE TIMESTAMP</p>
+            <p className="font-mono text-xs text-primary" id="live-ts">{new Date().toISOString()}</p>
+          </div>
+        </div>
       </div>
 
-      <Card className="grid grid-cols-2 gap-2 p-4 sm:grid-cols-4">
+      {/* Live Operations Ledger */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
+        <StatCard label="Units Verified" value={<AnimatedNumber value={s.scansToday} />} sub="+1.2% Nominal" icon="scan" />
+        <StatCard label="Units Rescued" value={<AnimatedNumber value={s.recovered} />} sub="+0.5% Nominal" icon="truck" tone="brand" />
+        <StatCard label="Active Flags" value={<AnimatedNumber value={s.highRisk} />} sub="Critical Attention Required" icon="alert" tone="rose" />
+      </div>
+
+      {/* Primary Directives */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {pipeline.map((p, i) => (
-          <div key={p.k} className="flex items-center gap-3">
-            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-500/15 text-brand-300"><Icon name={p.icon} size={17} /></span>
-            <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-mist-400">{i + 1}. {p.k}</p>
-              <p className="text-lg font-bold leading-tight text-mist-100">{p.v}</p>
-              <p className="truncate text-[10px] text-mist-500">{p.sub}</p>
+          <div key={p.k} className="border border-border-low bg-surface-panel p-4">
+            <div className="flex items-center gap-3">
+              <span className="grid size-9 shrink-0 place-items-center border border-border-low bg-surface-high text-primary">
+                <Icon name={p.icon} size={17} />
+              </span>
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">{i + 1}. {p.k}</p>
+                <p className="text-lg font-bold leading-tight text-on-surface">{p.v}</p>
+                <p className="truncate font-mono text-[10px] text-text-secondary">{p.sub}</p>
+              </div>
             </div>
           </div>
         ))}
-      </Card>
+      </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="space-y-5 lg:col-span-2">
+          {/* Surplus Risk Board */}
           <SectionTitle title="Surplus Risk Board" sub="Stock − (Daily Burn × Days to Expiry) − Safety Buffer" />
-          <Card className="divide-y divide-edge">
+          <Card className="border-border-low">
             {riskBoard.map((b) => (
-              <button key={b.id} onClick={() => nav('/match?batch=' + b.id)} className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-brand-500/5">
+              <button key={b.id} onClick={() => nav('/match?batch=' + b.id)} className="flex w-full items-center gap-3 border-b border-border-low px-4 py-3.5 text-left transition hover:bg-surface-high last:border-b-0">
                 <span className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="truncate text-sm font-semibold text-mist-100">{b.name} {b.strength}</p>
+                    <p className="truncate text-sm font-bold text-on-surface">{b.name} {b.strength}</p>
                     <Pill label={b.level} className="shrink-0" />
                   </div>
-                  <p className="mt-0.5 text-[11px] text-mist-500">
+                  <p className="mt-0.5 font-mono text-[11px] text-text-secondary">
                     {b.surplus ? `${fmtNum(b.projectedSurplus)} units surplus · ` : 'No surplus · '}
                     {b.days} days to expiry · {b.stock} in stock
                   </p>
@@ -65,22 +86,23 @@ export default function Dashboard() {
                 <span className="w-36 shrink-0"><ScoreBar score={b.score} /></span>
               </button>
             ))}
-            {riskBoard.length === 0 && <p className="px-4 py-8 text-center text-xs text-mist-500">No batches currently flagged for surplus.</p>}
+            {riskBoard.length === 0 && <p className="px-4 py-8 text-center font-mono text-xs text-text-secondary">No batches currently flagged for surplus.</p>}
           </Card>
 
-          <SectionTitle title="Authenticity verdicts" sub="distribution across the audit ledger" />
+          {/* Authenticity Verdicts */}
+          <SectionTitle title="Authenticity Verdicts" sub="Distribution across the audit ledger" />
           <Card className="p-4">
             <div className="space-y-3">
-              {[['Verified', 'emerald'], ['Suspicious', 'amber'], ['High-Risk', 'rose']].map(([v, tone]) => {
+              {[['Verified', 'primary'], ['Suspicious', 'tertiary'], ['High-Risk', 'error']].map(([v, tone]) => {
                 const n = verdicts[v] || 0;
                 const max = Math.max(1, n, ...Object.values(verdicts));
                 return (
                   <div key={v} className="flex items-center gap-3">
-                    <span className="w-24 text-xs font-medium text-mist-300">{v}</span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-mist-700/50">
-                      <div className={`h-full rounded-full ${tone === 'emerald' ? 'bg-emerald-500' : tone === 'amber' ? 'bg-amber-400' : 'bg-rose-500'}`} style={{ width: `${(n / max) * 100}%` }} />
+                    <span className="w-24 font-mono text-[11px] text-on-surface-variant">{v}</span>
+                    <div className="h-2 flex-1 bg-border-low">
+                      <div className={`h-full ${tone === 'primary' ? 'bg-primary' : tone === 'tertiary' ? 'bg-tertiary' : 'bg-error'}`} style={{ width: `${(n / max) * 100}%` }} />
                     </div>
-                    <span className="w-8 text-right text-xs font-bold tabular-nums text-mist-200">{n}</span>
+                    <span className="w-8 text-right font-mono text-xs font-bold tabular-nums text-on-surface">{n}</span>
                   </div>
                 );
               })}
@@ -88,43 +110,45 @@ export default function Dashboard() {
           </Card>
         </div>
 
+        {/* Live Activity */}
         <div>
-          <SectionTitle title="Live activity" sub="scans, matches and transfers" />
-          <Card className="divide-y divide-edge">
+          <SectionTitle title="Live Activity" sub="Scans, matches and transfers" />
+          <Card className="border-border-low">
             {activity.slice(0, 9).map((a) => (
-              <div key={a.id} className="flex gap-3 px-4 py-3">
-                <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-panel2 text-mist-400">
+              <div key={a.id} className="flex gap-3 border-b border-border-low px-4 py-3 last:border-b-0">
+                <span className="mt-0.5 grid size-7 shrink-0 place-items-center border border-border-low bg-surface-high text-text-secondary">
                   <Icon name={ACTION_ICON[a.action] || 'audit'} size={14} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="truncate text-xs font-semibold text-mist-100">{a.actor}</p>
-                    <span className="shrink-0 text-[10px] text-mist-500">{fmtDate(a.at)}</span>
+                    <p className="truncate text-xs font-bold text-on-surface">{a.actor}</p>
+                    <span className="shrink-0 font-mono text-[10px] text-text-secondary">{fmtDate(a.at)}</span>
                   </div>
-                  <p className="truncate text-[11px] text-mist-500">{a.city || '—'} · {a.result?.split('·')[0]}</p>
+                  <p className="truncate font-mono text-[11px] text-text-secondary">{a.city || '—'} · {a.result?.split('·')[0]}</p>
                 </div>
               </div>
             ))}
-            {activity.length === 0 && <p className="px-4 py-8 text-center text-xs text-mist-500">No activity yet.</p>}
+            {activity.length === 0 && <p className="px-4 py-8 text-center font-mono text-xs text-text-secondary">No activity yet.</p>}
           </Card>
         </div>
       </div>
 
-      <Card className="flex flex-col gap-3 border-brand-500/30 bg-gradient-to-r from-brand-500/10 to-emerald-500/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* Info Banner */}
+      <div className="flex flex-col gap-3 border border-primary bg-primary-container/10 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-500 text-void glow"><Icon name="bolt" size={19} /></span>
+          <span className="grid size-10 shrink-0 place-items-center border border-primary bg-primary-container text-on-primary"><Icon name="bolt" size={19} /></span>
           <div>
-            <p className="text-sm font-bold text-mist-100">Why PharmSecure matters</p>
-            <p className="max-w-xl text-xs leading-relaxed text-mist-400">
+            <p className="text-sm font-bold text-on-surface">Why PharmSecure matters</p>
+            <p className="max-w-xl text-xs leading-relaxed text-on-surface-variant">
               Counterfeit medicines cause over 1M deaths a year (WHO) while hospitals discard stock 30–60 days from expiry. PharmSecure doesn't just detect fakes — it prevents genuine medicine from becoming waste.
             </p>
           </div>
         </div>
         <div className="flex shrink-0 gap-2">
-          <button onClick={() => nav('/verify')} className="rounded-xl bg-panel2 px-4 py-2 text-xs font-bold text-brand-200 ring-1 ring-inset ring-brand-500/40 hover:bg-brand-500/10">Scan a medicine</button>
-          <button onClick={() => nav('/match')} className="rounded-xl bg-brand-500 px-4 py-2 text-xs font-bold text-void hover:bg-brand-400">Rescue surplus</button>
+          <button onClick={() => nav('/verify')} className="border border-border-low bg-surface px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-primary hover:bg-primary-container/15 transition">Scan a medicine</button>
+          <button onClick={() => nav('/match')} className="bg-primary-container px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-on-primary hover:bg-on-primary-container transition">Rescue surplus</button>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

@@ -32,10 +32,10 @@ export default function QRStudio() {
 
   if (!can?.qr) {
     return (
-      <Card className="p-8 text-center">
-        <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-panel2 text-mist-400"><Icon name="qricon" size={22} /></span>
-        <p className="mt-3 text-sm font-bold text-mist-100">QR issuance is a manufacturer capability</p>
-        <p className="mt-1 text-xs text-mist-500">Sign in as a Manufacturer · Quality Lead to issue unique batch identity codes.</p>
+      <Card className="p-8 text-center border-border-low">
+        <span className="mx-auto grid size-12 place-items-center border border-border-low bg-surface-high text-text-secondary"><Icon name="qricon" size={22} /></span>
+        <p className="mt-3 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-on-surface-variant">QR issuance is a manufacturer capability</p>
+        <p className="mt-1 font-mono text-[11px] text-text-secondary">Sign in as a Manufacturer to issue unique batch identity codes.</p>
       </Card>
     );
   }
@@ -49,19 +49,20 @@ export default function QRStudio() {
       serialCount: form.serialCount, coldChain: form.coldChain,
     });
     const serial = rc.created[0];
-    const qr = await QRCode.toDataURL(serial, { width: 280, margin: 1, color: { dark: '#06120c', light: '#ffffff' } });
+    const qr = await QRCode.toDataURL(serial, { width: 280, margin: 1, color: { dark: '#0e0e0e', light: '#ffffff' } });
     setIssued({ code: serial, qr, count: rc.created.length, name: `${form.name} ${form.strength}` });
   }
 
   return (
-    <div className="animate-fade-up grid gap-5 lg:grid-cols-3">
-      <Card className="p-5 glow-sm lg:col-span-2">
-        <h2 className="text-base font-bold tracking-tight text-mist-100">Issue a batch identity</h2>
-        <p className="text-xs text-mist-500">Register a production batch and mint unique serial QRs — each live-verifiable against the SQLite ledger.</p>
+    <div className="grid gap-5 lg:grid-cols-3">
+      <Card className="p-5 lg:col-span-2 border-border-low">
+        <div className="double-header pb-2 mb-4">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Manufacturer Terminal — Batch Identity Issuance</p>
+        </div>
 
-        <div className="mt-4 flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5">
           {PRESETS.map((p) => (
-            <button key={p.name} onClick={() => set({ ...p })} className={cx('rounded-full border px-3 py-1 text-xs font-medium transition', form.name === p.name ? 'border-brand-400 bg-brand-500/20 text-brand-200' : 'border-edge bg-panel2 text-mist-300 hover:border-brand-400/50')}>
+            <button key={p.name} onClick={() => set({ ...p })} className={cx('border px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.1em] transition', form.name === p.name ? 'border-primary bg-primary-container/20 text-primary' : 'border-border-low bg-surface text-text-secondary hover:border-primary')}>
               {p.name}
             </button>
           ))}
@@ -76,57 +77,56 @@ export default function QRStudio() {
               {['Tablet', 'Capsule', 'Injectable', 'Inhaler', 'IV Fluid', 'Syrup'].map((f) => <option key={f}>{f}</option>)}
             </select>
           </Field>
-          <Field label="Batch code" hint="becomes PS-{CODE}-NNN"><input value={form.code} onChange={(e) => set({ code: e.target.value.toUpperCase() })} className={inputCls} /></Field>
-          <Field label="Expiry date"><input type="date" value={form.expiry} onChange={(e) => set({ expiry: e.target.value })} className={inputCls} /></Field>
-          <Field label="Carton quantity"><input type="number" value={form.qty} onChange={(e) => set({ qty: e.target.value })} className={inputCls} /></Field>
-          <Field label="Serials to mint"><input type="number" min={1} value={form.serialCount} onChange={(e) => set({ serialCount: e.target.value })} className={inputCls} /></Field>
+          <Field label="Batch Code" hint="becomes PS-{CODE}-NNN"><input value={form.code} onChange={(e) => set({ code: e.target.value.toUpperCase() })} className={inputCls} /></Field>
+          <Field label="Expiry Date"><input type="date" value={form.expiry} onChange={(e) => set({ expiry: e.target.value })} className={inputCls} /></Field>
+          <Field label="Carton Quantity"><input type="number" value={form.qty} onChange={(e) => set({ qty: e.target.value })} className={inputCls} /></Field>
+          <Field label="Serials to Mint"><input type="number" min={1} value={form.serialCount} onChange={(e) => set({ serialCount: e.target.value })} className={inputCls} /></Field>
         </div>
 
-        <label className="mt-3 flex items-center gap-2 text-xs font-semibold text-mist-200">
-          <input type="checkbox" checked={form.coldChain} onChange={(e) => set({ coldChain: e.target.checked })} className="size-4 accent-brand-500" />
-          Cold-chain shipment (2–8°C) — adds handling constraints to matching
+        <label className="mt-3 flex items-center gap-2 font-mono text-[11px] text-on-surface-variant">
+          <input type="checkbox" checked={form.coldChain} onChange={(e) => set({ coldChain: e.target.checked })} className="accent-primary" />
+          Cold-chain shipment (2-8C) — adds handling constraints to matching
         </label>
 
-        <Button className="mt-5" onClick={submit} icon="qricon" size="lg" disabled={busy.issue}>{busy.issue ? 'Minting…' : 'Mint batch & generate QR'}</Button>
+        <Button className="mt-5" onClick={submit} disabled={busy.issue}>{busy.issue ? 'Minting...' : 'Mint Batch & Generate QR'}</Button>
       </Card>
 
       <div className="space-y-5">
         {issued && (
-          <Card className="p-5 text-center glow-sm">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-mist-400">New serial issued · {issued.count} minted</p>
-            <div className="mx-auto mt-3 w-fit rounded-2xl border border-edge bg-white p-3 shadow-sm">
+          <Card className="p-5 text-center border-border-low">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">New serial issued · {issued.count} minted</p>
+            <div className="mx-auto mt-3 w-fit border border-border-low bg-white p-3">
               <img src={issued.qr} alt="batch QR" className="size-44" />
             </div>
-            <p className="mt-3 text-sm font-bold text-mist-100">{issued.name}</p>
-            <p className="text-xs tabular-nums text-brand-300">{issued.code} …</p>
+            <p className="mt-3 text-sm font-bold text-on-surface">{issued.name}</p>
+            <p className="font-mono text-[12px] text-primary">{issued.code}</p>
             <div className="mt-4 grid grid-cols-2 gap-2">
-              <Button variant="ghost" size="sm" icon="copy" onClick={() => { navigator.clipboard?.writeText(issued.code); }}>Copy code</Button>
-              <Button size="sm" icon="scan" onClick={() => nav('/verify')}>Test in Verify</Button>
+              <Button variant="ghost" size="sm" onClick={() => { navigator.clipboard?.writeText(issued.code); }}>Copy Code</Button>
+              <Button size="sm" onClick={() => nav('/verify')}>Test in Verify</Button>
             </div>
-            <p className="mt-3 text-[10px] text-mist-500">Ledger entry + audit record written automatically.</p>
+            <p className="mt-3 font-mono text-[10px] text-text-secondary">Ledger entry + audit record written automatically.</p>
           </Card>
         )}
 
-        <Card className="p-5">
-          <h4 className="text-sm font-bold text-mist-100">Judge demo deck</h4>
-          <p className="mt-1 text-xs text-mist-500">11 live-verifiable QR cards. Scan any from the app camera — <span className="text-emerald-300">genuine → Verified</span>, the red one → <span className="text-rose-300">High-Risk</span>.</p>
+        <Card className="p-5 border-border-low">
+          <h4 className="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-on-surface-variant">Judge Demo Deck</h4>
+          <p className="mt-1 font-mono text-[11px] text-text-secondary">11 live-verifiable QR cards. Scan any from the app camera — genuine goes Verified, the red one goes High-Risk.</p>
           <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
             {DECK.map(([code, name]) => {
               const fake = code === 'PS-DEMO-FAKE';
               return (
-                <div key={code} className={cx('lift rounded-xl border p-2 text-center transition', fake ? 'border-rose-500/40 bg-rose-500/[.06]' : 'border-edge bg-panel2/60 hover:border-brand-400/50')}>
-                  <img src={`${import.meta.env.BASE_URL}demo-qr/${code}.png`} alt={code} className="w-full rounded-lg bg-white p-1" />
-                  <p className={cx('mt-1.5 truncate font-mono text-[9px]', fake ? 'text-rose-300' : 'text-mist-400')}>{code}</p>
-                  <p className="truncate text-[9px] text-mist-500">{name}</p>
+                <div key={code} className={cx('border p-2 text-center transition', fake ? 'border-error bg-error-container/10' : 'border-border-low bg-surface-high hover:border-primary')}>
+                  <img src={`${import.meta.env.BASE_URL}demo-qr/${code}.png`} alt={code} className="w-full bg-white p-1" />
+                  <p className={cx('mt-1.5 truncate font-mono text-[9px]', fake ? 'text-error' : 'text-text-secondary')}>{code}</p>
+                  <p className="truncate text-[9px] text-text-secondary">{name}</p>
                 </div>
               );
             })}
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button variant="ghost" size="sm" icon="copy" onClick={() => { window.open('/print.html', '_blank'); }}>Open printable deck</Button>
-            <Button variant="ghost" size="sm" icon="audit" onClick={() => nav('/verify')}>Scan one now</Button>
+            <Button variant="ghost" size="sm" onClick={() => { window.open('/print.html', '_blank'); }}>Open Printable Deck</Button>
+            <Button variant="ghost" size="sm" onClick={() => nav('/verify')}>Scan One Now</Button>
           </div>
-          <p className="mt-2 text-[10px] text-mist-500">PNGs also live in <code className="text-brand-300">/qr-codes</code> — print on A4 for the judges’ table.</p>
         </Card>
       </div>
     </div>

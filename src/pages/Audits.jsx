@@ -11,7 +11,7 @@ const ACTION_ICON = {
   scan: 'scan', qr_issue: 'qricon', match: 'arrows', request: 'handshake',
   transfer_propose: 'truck', transfer_accepted: 'check', transfer_dispatch: 'truck', transfer_deliver: 'check',
 };
-const FILTERS = [['all', 'All'], ['scan', 'Scans'], ['transfer', 'Transfers'], ['qr_issue', 'QR issues'], ['request', 'Requests']];
+const FILTERS = [['all', 'All'], ['scan', 'Scans'], ['transfer', 'Transfers'], ['qr_issue', 'QR Issues'], ['request', 'Requests']];
 
 function isTransfer(a) { return (a.action || '').startsWith('transfer'); }
 
@@ -45,13 +45,18 @@ export default function Audits() {
   };
 
   return (
-    <div className="animate-fade-up space-y-4">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="text-base font-bold tracking-tight text-mist-100">Audit trail</h2>
-          <p className="text-xs text-mist-500">Immutable, compliance-ready log of every scan, match and transfer — chain-of-custody preserved.</p>
+    <div className="space-y-4">
+      {/* Page Header */}
+      <div className="border border-border-low bg-surface-panel p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="double-header pb-2 mb-2">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Certified System Record — Secure Ledger</p>
+            </div>
+            <p className="font-mono text-[11px] text-on-surface-variant">Protocol ID: PS-8892-A · Generated: {new Date().toISOString()}</p>
+          </div>
+          <Button variant="ghost" icon={downloaded ? 'check' : 'copy'} onClick={exportCsv}>{downloaded ? 'Exported' : 'Export Certified PDF'}</Button>
         </div>
-        <Button variant="ghost" icon={downloaded ? 'check' : 'copy'} onClick={exportCsv}>{downloaded ? 'Exported' : 'Export CSV'}</Button>
       </div>
 
       <div className="flex flex-wrap gap-1.5">
@@ -60,64 +65,71 @@ export default function Audits() {
         ))}
       </div>
 
-      <Card className="overflow-hidden">
+      {/* Desktop Table */}
+      <Card className="overflow-hidden border-border-low">
         <div className="max-h-[70vh] overflow-y-auto">
           <table className="hidden w-full text-left text-sm md:table">
-            <thead className="sticky top-0 bg-panel">
-              <tr className="border-b border-edge text-[10px] font-bold uppercase tracking-wider text-mist-400">
-                <th className="px-4 py-3">When</th>
-                <th className="px-4 py-3">Actor</th>
-                <th className="px-4 py-3">Action</th>
-                <th className="px-4 py-3">Code</th>
-                <th className="px-4 py-3">Organization / city</th>
-                <th className="px-4 py-3">Result</th>
+            <thead className="sticky top-0 bg-surface-panel">
+              <tr className="border-b border-border-low bg-surface-low">
+                <th className="px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Timestamp</th>
+                <th className="px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Actor</th>
+                <th className="px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Action</th>
+                <th className="px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Code</th>
+                <th className="px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Organization / City</th>
+                <th className="px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">Result</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-edge">
+            <tbody className="divide-y divide-border-low">
               {list.map((a) => (
-                <tr key={a.id} className={a.result === 'High-Risk' ? 'bg-rose-500/5' : 'hover:bg-panel2/60'}>
-                  <td className="whitespace-nowrap px-4 py-3 text-xs text-mist-500">{fmtDate(a.at)}</td>
+                <tr key={a.id} className={a.result === 'High-Risk' ? 'bg-error-container/5' : 'hover:bg-surface-high'}>
+                  <td className="whitespace-nowrap px-4 py-3 font-mono text-[11px] text-text-secondary">{fmtDate(a.at)}</td>
                   <td className="px-4 py-3">
-                    <p className="text-xs font-semibold text-mist-100">{a.actor}</p>
-                    <p className="text-[10px] text-mist-500">{a.role}</p>
+                    <p className="text-xs font-bold text-on-surface">{a.actor}</p>
+                    <p className="font-mono text-[10px] text-text-secondary">{a.role}</p>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-mist-200">
-                      <Icon name={ACTION_ICON[a.action] || 'audit'} size={13} className="text-mist-500" />
+                    <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-on-surface-variant">
+                      <Icon name={ACTION_ICON[a.action] || 'audit'} size={13} className="text-text-secondary" />
                       {ACTION_LABEL[a.action] || a.action}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-mist-300">{a.code}</td>
-                  <td className="px-4 py-3 text-xs text-mist-500">{a.org} · {a.city}</td>
+                  <td className="px-4 py-3 font-mono text-[11px] text-on-surface-variant">{a.code}</td>
+                  <td className="px-4 py-3 font-mono text-[11px] text-text-secondary">{a.org} · {a.city}</td>
                   <td className="px-4 py-3"><Pill label={a.result} /></td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <div className="divide-y divide-edge md:hidden">
+          <div className="divide-y divide-border-low md:hidden">
             {list.map((a) => (
               <div key={a.id} className="flex gap-3 px-4 py-3">
-                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-panel2 text-mist-400"><Icon name={ACTION_ICON[a.action] || 'audit'} size={15} /></span>
+                <span className="grid size-8 shrink-0 place-items-center border border-border-low bg-surface-high text-text-secondary"><Icon name={ACTION_ICON[a.action] || 'audit'} size={15} /></span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-xs font-semibold text-mist-100">{ACTION_LABEL[a.action] || a.action}</p>
+                    <p className="truncate text-xs font-bold text-on-surface">{ACTION_LABEL[a.action] || a.action}</p>
                     <Pill label={a.result} className="shrink-0" />
                   </div>
-                  <p className="mt-0.5 truncate text-[11px] text-mist-500">{a.code} · {a.org} · {a.city}</p>
-                  <p className="text-[10px] text-mist-500">{a.actor} · {fmtDate(a.at)}</p>
+                  <p className="mt-0.5 truncate font-mono text-[11px] text-text-secondary">{a.code} · {a.org} · {a.city}</p>
+                  <p className="font-mono text-[10px] text-text-secondary">{a.actor} · {fmtDate(a.at)}</p>
                 </div>
               </div>
             ))}
           </div>
-          {list.length === 0 && <p className="px-4 py-10 text-center text-xs text-mist-500">Nothing matches this filter.</p>}
+          {list.length === 0 && <p className="px-4 py-10 text-center font-mono text-xs text-text-secondary">Nothing matches this filter.</p>}
         </div>
       </Card>
 
-      <Card className="flex flex-col gap-2 border-brand-500/30 bg-brand-500/10 p-4 text-[11px] text-mist-300 sm:flex-row sm:items-center sm:gap-3">
-        <Icon name="shield" size={16} className="shrink-0 text-brand-300" />
-        <p>Every event references an actor, organization and result. Transfers log a full chain-of-custody — audit-ready for hospital boards and compliance teams.</p>
-      </Card>
+      {/* End of Log */}
+      <div className="flex items-center justify-between border border-border-low bg-surface-panel px-4 py-3">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-text-secondary">End of Log</span>
+        <Button variant="ghost" size="sm" icon="copy" onClick={exportCsv}>Export Certified PDF</Button>
+      </div>
+
+      {/* Footer */}
+      <div className="border border-border-low bg-surface-panel px-4 py-4 text-center">
+        <p className="font-mono text-[10px] text-text-secondary">Every event references an actor, organization and result. Transfers log a full chain-of-custody — audit-ready for hospital boards and compliance teams.</p>
+      </div>
     </div>
   );
 }
