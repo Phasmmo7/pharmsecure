@@ -11,6 +11,15 @@ export const ACCOUNTS = [
   { id: 'acc_ngo', init: 'U', name: 'Utsav', role: 'NGO Coordinator', title: 'Aarogya Seva', initials: 'U' },
 ];
 
+export const ORG_TYPES = {
+  HOSPITAL: 'Hospital',
+  CLINIC: 'Clinic',
+  NGO: 'NGO',
+  PHARMACY: 'Pharmacy',
+  MANUFACTURER: 'Manufacturer',
+  DISTRIBUTOR: 'Distributor',
+};
+
 const TOKEN_KEY = 'ps.token';
 const USER_KEY = 'ps.user';
 

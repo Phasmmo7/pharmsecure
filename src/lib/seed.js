@@ -22,6 +22,7 @@ function makeBatch(o) {
     id: o.id, name: o.name, generic: o.generic, form: o.form, strength: o.strength,
     mfgId: o.mfgId, holderId: o.holderId, expiry: o.expiry, stock: o.stock,
     dailyBurn: o.dailyBurn, safetyBuffer: o.safetyBuffer, coldChain: !!o.coldChain,
+    price: o.price || 0, unit: o.unit || 'strip',
     createdAt: o.createdAt || inDays(-120), serialCount: o.serialCount || 1,
   };
 }
@@ -42,32 +43,147 @@ export function buildSeed() {
   const batches = {};
   function addB(o) { batches[o.id] = makeBatch(o); return batches[o.id]; }
 
+// --- Original medicines (with prices) ---
 addB({ id:'bat_met', name:'Metformin', generic:'Metformin HCl', form:'Tablet', strength:'500 mg',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(38), stock:1500, dailyBurn:18, safetyBuffer:120, serialCount:150 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(38), stock:1500, dailyBurn:18, safetyBuffer:120, price:45, unit:'strip', serialCount:150 });
 addB({ id:'bat_ins', name:'Insulin Glargine', generic:'Insulin Glargine', form:'Injectable', strength:'100 IU/mL',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(55), stock:340, dailyBurn:2, safetyBuffer:30, coldChain:true, serialCount:40 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(55), stock:340, dailyBurn:2, safetyBuffer:30, coldChain:true, price:1250, unit:'vial', serialCount:40 });
 addB({ id:'bat_amox', name:'Amoxicillin', generic:'Amoxicillin', form:'Capsule', strength:'500 mg',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(45), stock:400, dailyBurn:12, safetyBuffer:100, serialCount:120 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(45), stock:400, dailyBurn:12, safetyBuffer:100, price:35, unit:'strip', serialCount:120 });
 addB({ id:'bat_ond', name:'Ondansetron', generic:'Ondansetron', form:'Tablet', strength:'4 mg',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(28), stock:480, dailyBurn:6, safetyBuffer:40, serialCount:90 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(28), stock:480, dailyBurn:6, safetyBuffer:40, price:28, unit:'strip', serialCount:90 });
 addB({ id:'bat_cet', name:'Cetirizine', generic:'Cetirizine HCl', form:'Tablet', strength:'10 mg',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(70), stock:900, dailyBurn:10, safetyBuffer:80, serialCount:130 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(70), stock:900, dailyBurn:10, safetyBuffer:80, price:15, unit:'strip', serialCount:130 });
 addB({ id:'bat_par', name:'Paracetamol', generic:'Paracetamol', form:'Tablet', strength:'500 mg',
-  mfgId:'org_sunrise', holderId:'org_punepham', expiry:inDays(200), stock:5000, dailyBurn:90, safetyBuffer:400, serialCount:400 });
+  mfgId:'org_sunrise', holderId:'org_punepham', expiry:inDays(200), stock:5000, dailyBurn:90, safetyBuffer:400, price:12, unit:'strip', serialCount:400 });
 addB({ id:'bat_sal', name:'Salbutamol Inhaler', generic:'Salbutamol', form:'Inhaler', strength:'100 mcg/puff',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(25), stock:150, dailyBurn:3, safetyBuffer:20, serialCount:30 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(25), stock:150, dailyBurn:3, safetyBuffer:20, price:320, unit:'piece', serialCount:30 });
 addB({ id:'bat_cef', name:'Cefixime', generic:'Cefixime', form:'Tablet', strength:'200 mg',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(90), stock:1200, dailyBurn:7, safetyBuffer:60, serialCount:180 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(90), stock:1200, dailyBurn:7, safetyBuffer:60, price:85, unit:'strip', serialCount:180 });
 addB({ id:'bat_ns', name:'Normal Saline', generic:'Sodium Chloride 0.9%', form:'IV Fluid', strength:'500 mL',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(20), stock:2000, dailyBurn:40, safetyBuffer:500, serialCount:60 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(20), stock:2000, dailyBurn:40, safetyBuffer:500, price:25, unit:'bottle', serialCount:60 });
 addB({ id:'bat_dex', name:'Dextrose 5%', generic:'Dextrose', form:'IV Fluid', strength:'500 mL',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(33), stock:950, dailyBurn:15, safetyBuffer:60, serialCount:50 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(33), stock:950, dailyBurn:15, safetyBuffer:60, price:30, unit:'bottle', serialCount:50 });
 addB({ id:'bat_azm', name:'Azithromycin', generic:'Azithromycin', form:'Tablet', strength:'250 mg',
-  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(15), stock:600, dailyBurn:5, safetyBuffer:30, serialCount:80 });
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(15), stock:600, dailyBurn:5, safetyBuffer:30, price:55, unit:'strip', serialCount:80 });
 addB({ id:'bat_vit', name:'Vitamin D3', generic:'Cholecalciferol', form:'Capsule', strength:'60,000 IU',
-  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(-5), stock:80, dailyBurn:1, safetyBuffer:10, serialCount:20 });
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(-5), stock:80, dailyBurn:1, safetyBuffer:10, price:95, unit:'strip', serialCount:20 });
 addB({ id:'bat_amo_dup', name:'Amoxicillin', generic:'Amoxicillin', form:'Capsule', strength:'500 mg',
-  mfgId:'org_sunrise', holderId:'org_meddist', expiry:inDays(160), stock:900, dailyBurn:11, safetyBuffer:80, serialCount:8 });
+  mfgId:'org_sunrise', holderId:'org_meddist', expiry:inDays(160), stock:900, dailyBurn:11, safetyBuffer:80, price:35, unit:'strip', serialCount:8 });
+
+// --- Antibiotics ---
+addB({ id:'bat_cip', name:'Ciprofloxacin', generic:'Ciprofloxacin HCl', form:'Tablet', strength:'500 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(120), stock:800, dailyBurn:8, safetyBuffer:60, price:42, unit:'strip', serialCount:100 });
+addB({ id:'bat_dox', name:'Doxycycline', generic:'Doxycycline HCl', form:'Capsule', strength:'100 mg',
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(95), stock:650, dailyBurn:6, safetyBuffer:50, price:38, unit:'strip', serialCount:80 });
+addB({ id:'bat_ery', name:'Erythromycin', generic:'Erythromycin Stearate', form:'Tablet', strength:'250 mg',
+  mfgId:'org_sunrise', holderId:'org_punecliw', expiry:inDays(60), stock:400, dailyBurn:5, safetyBuffer:40, price:30, unit:'strip', serialCount:60 });
+addB({ id:'bat_lev', name:'Levofloxacin', generic:'Levofloxacin', form:'Tablet', strength:'500 mg',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(80), stock:350, dailyBurn:4, safetyBuffer:30, price:65, unit:'strip', serialCount:50 });
+addB({ id:'bat_met_r', name:'Metronidazole', generic:'Metronidazole', form:'Tablet', strength:'400 mg',
+  mfgId:'org_sunrise', holderId:'org_nashik', expiry:inDays(140), stock:700, dailyBurn:7, safetyBuffer:50, price:18, unit:'strip', serialCount:90 });
+addB({ id:'bat_hex', name:'Chlorhexidine', generic:'Chlorhexidine Gluconate', form:'Solution', strength:'5%',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(200), stock:300, dailyBurn:3, safetyBuffer:20, price:55, unit:'bottle', serialCount:40 });
+
+// --- Pain & Anti-inflammatory ---
+addB({ id:'bat_ibu', name:'Ibuprofen', generic:'Ibuprofen', form:'Tablet', strength:'400 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(180), stock:2000, dailyBurn:25, safetyBuffer:200, price:10, unit:'strip', serialCount:200 });
+addB({ id:'bat_dic', name:'Diclofenac', generic:'Diclofenac Sodium', form:'Tablet', strength:'50 mg',
+  mfgId:'org_sunrise', holderId:'org_punepham', expiry:inDays(150), stock:1200, dailyBurn:12, safetyBuffer:80, price:14, unit:'strip', serialCount:120 });
+addB({ id:'bat_ace', name:'Aceclofenac', generic:'Aceclofenac', form:'Tablet', strength:'100 mg',
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(110), stock:500, dailyBurn:6, safetyBuffer:40, price:22, unit:'strip', serialCount:70 });
+addB({ id:'bat_nap', name:'Naproxen', generic:'Naproxen Sodium', form:'Tablet', strength:'500 mg',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(90), stock:250, dailyBurn:3, safetyBuffer:25, price:35, unit:'strip', serialCount:40 });
+addB({ id:'bat_tri', name:'Tramadol', generic:'Tramadol HCl', form:'Tablet', strength:'50 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(75), stock:180, dailyBurn:2, safetyBuffer:15, price:48, unit:'strip', serialCount:30 });
+
+// --- Cardiovascular ---
+addB({ id:'bat_ator', name:'Atorvastatin', generic:'Atorvastatin Calcium', form:'Tablet', strength:'20 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(160), stock:900, dailyBurn:10, safetyBuffer:70, price:55, unit:'strip', serialCount:100 });
+addB({ id:'bat_amlo', name:'Amlodipine', generic:'Amlodipine Besylate', form:'Tablet', strength:'5 mg',
+  mfgId:'org_sunrise', holderId:'org_punecliw', expiry:inDays(130), stock:1100, dailyBurn:12, safetyBuffer:80, price:32, unit:'strip', serialCount:110 });
+addB({ id:'bat_tel', name:'Telmisartan', generic:'Telmisartan', form:'Tablet', strength:'40 mg',
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(100), stock:450, dailyBurn:5, safetyBuffer:35, price:68, unit:'strip', serialCount:60 });
+addB({ id:'bat_met_b', name:'Metoprolol', generic:'Metoprolol Succinate', form:'Tablet', strength:'50 mg',
+  mfgId:'org_sunrise', holderId:'org_nashik', expiry:inDays(85), stock:380, dailyBurn:4, safetyBuffer:30, price:45, unit:'strip', serialCount:50 });
+addB({ id:'bat_clo', name:'Clopidogrel', generic:'Clopidogrel Bisulfate', form:'Tablet', strength:'75 mg',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(140), stock:300, dailyBurn:3, safetyBuffer:25, price:72, unit:'strip', serialCount:40 });
+addB({ id:'bat_hyd', name:'Hydrochlorothiazide', generic:'Hydrochlorothiazide', form:'Tablet', strength:'25 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(170), stock:600, dailyBurn:6, safetyBuffer:50, price:18, unit:'strip', serialCount:70 });
+
+// --- Diabetes ---
+addB({ id:'bat_gli', name:'Glimepiride', generic:'Glimepiride', form:'Tablet', strength:'2 mg',
+  mfgId:'org_sunrise', holderId:'org_punepham', expiry:inDays(120), stock:400, dailyBurn:5, safetyBuffer:35, price:38, unit:'strip', serialCount:50 });
+addB({ id:'bat_sit', name:'Sitagliptin', generic:'Sitagliptin Phosphate', form:'Tablet', strength:'100 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(95), stock:200, dailyBurn:2, safetyBuffer:20, price:185, unit:'strip', serialCount:30 });
+addB({ id:'bat_emp', name:'Empagliflozin', generic:'Empagliflozin', form:'Tablet', strength:'25 mg',
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(80), stock:150, dailyBurn:2, safetyBuffer:15, price:220, unit:'strip', serialCount:25 });
+
+// --- Respiratory ---
+addB({ id:'bat_mont', name:'Montelukast', generic:'Montelukast Sodium', form:'Tablet', strength:'10 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(110), stock:700, dailyBurn:7, safetyBuffer:50, price:42, unit:'strip', serialCount:80 });
+addB({ id:'bat_des', name:'Desloratadine', generic:'Desloratadine', form:'Tablet', strength:'5 mg',
+  mfgId:'org_sunrise', holderId:'org_punecliw', expiry:inDays(100), stock:350, dailyBurn:4, safetyBuffer:30, price:55, unit:'strip', serialCount:50 });
+addB({ id:'bat_ben', name:'Benzydamine', generic:'Benzydamine HCl', form:'Gargle', strength:'0.15%',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(150), stock:200, dailyBurn:2, safetyBuffer:15, price:65, unit:'bottle', serialCount:30 });
+addB({ id:'bat_amb', name:'Ambroxol', generic:'Ambroxol HCl', form:'Syrup', strength:'75 mg/5 mL',
+  mfgId:'org_sunrise', holderId:'org_nashik', expiry:inDays(90), stock:250, dailyBurn:3, safetyBuffer:20, price:48, unit:'bottle', serialCount:35 });
+
+// --- Gastrointestinal ---
+addB({ id:'bat_panto', name:'Pantoprazole', generic:'Pantoprazole Sodium', form:'Tablet', strength:'40 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(130), stock:1000, dailyBurn:10, safetyBuffer:70, price:35, unit:'strip', serialCount:100 });
+addB({ id:'bat_ran', name:'Ranitidine', generic:'Ranitidine HCl', form:'Tablet', strength:'150 mg',
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(60), stock:500, dailyBurn:6, safetyBuffer:40, price:12, unit:'strip', serialCount:60 });
+addB({ id:'bat_lop', name:'Loperamide', generic:'Loperamide HCl', form:'Capsule', strength:'2 mg',
+  mfgId:'org_sunrise', holderId:'org_punecliw', expiry:inDays(140), stock:300, dailyBurn:3, safetyBuffer:25, price:28, unit:'strip', serialCount:40 });
+addB({ id:'bat_suc', name:'Sucralfate', generic:'Sucralfate', form:'Tablet', strength:'1 g',
+  mfgId:'org_sunrise', holderId:'org_nashik', expiry:inDays(110), stock:200, dailyBurn:2, safetyBuffer:20, price:55, unit:'strip', serialCount:30 });
+
+// --- Vitamins & Supplements ---
+addB({ id:'bat_fol', name:'Folic Acid', generic:'Folic Acid', form:'Tablet', strength:'5 mg',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(200), stock:1500, dailyBurn:15, safetyBuffer:100, price:8, unit:'strip', serialCount:150 });
+addB({ id:'bat_iron', name:'Iron Supplement', generic:'Ferrous Fumarate', form:'Tablet', strength:'200 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(180), stock:800, dailyBurn:8, safetyBuffer:60, price:15, unit:'strip', serialCount:90 });
+addB({ id:'bat_cal', name:'Calcium + D3', generic:'Calcium Carbonate + D3', form:'Tablet', strength:'500 mg + 250 IU',
+  mfgId:'org_sunrise', holderId:'org_punepham', expiry:inDays(160), stock:600, dailyBurn:6, safetyBuffer:50, price:35, unit:'strip', serialCount:70 });
+addB({ id:'bat_multi', name:'Multivitamin', generic:'Multivitamin Complex', form:'Capsule', strength:'1 cap',
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(150), stock:400, dailyBurn:5, safetyBuffer:35, price:45, unit:'strip', serialCount:50 });
+
+// --- Antifungal ---
+addB({ id:'bat_flu', name:'Fluconazole', generic:'Fluconazole', form:'Capsule', strength:'150 mg',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(120), stock:250, dailyBurn:2, safetyBuffer:20, price:32, unit:'strip', serialCount:35 });
+addB({ id:'bat_ke', name:'Ketoconazole', generic:'Ketoconazole', form:'Tablet', strength:'200 mg',
+  mfgId:'org_sunrise', holderId:'org_nashik', expiry:inDays(100), stock:180, dailyBurn:2, safetyBuffer:15, price:28, unit:'strip', serialCount:25 });
+
+// --- IV & Emergency ---
+addB({ id:'bat_ringer', name:'Ringer Lactate', generic:'Ringer Lactate', form:'IV Fluid', strength:'500 mL',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(30), stock:1200, dailyBurn:20, safetyBuffer:200, price:35, unit:'bottle', serialCount:100 });
+addB({ id:'bat_man', name:'Mannitol', generic:'Mannitol', form:'IV Fluid', strength:'20% 500 mL',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(25), stock:150, dailyBurn:2, safetyBuffer:15, price:85, unit:'bottle', serialCount:25 });
+addB({ id:'bat_vanco', name:'Vancomycin', generic:'Vancomycin HCl', form:'Injectable', strength:'500 mg',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(40), stock:100, dailyBurn:1, safetyBuffer:10, coldChain:true, price:450, unit:'vial', serialCount:20 });
+
+// --- Pediatric ---
+addB({ id:'bat_cro', name:'Cetirizine Drops', generic:'Cetirizine HCl', form:'Drops', strength:'5 mg/5 mL',
+  mfgId:'org_sunrise', holderId:'org_punecliw', expiry:inDays(90), stock:300, dailyBurn:3, safetyBuffer:25, price:42, unit:'bottle', serialCount:40 });
+addB({ id:'bat_par_s', name:'Paracetamol Syrup', generic:'Paracetamol', form:'Syrup', strength:'120 mg/5 mL',
+  mfgId:'org_sunrise', holderId:'org_navicare', expiry:inDays(100), stock:400, dailyBurn:5, safetyBuffer:30, price:28, unit:'bottle', serialCount:50 });
+addB({ id:'bat_azi_s', name:'Azithromycin Syrup', generic:'Azithromycin', form:'Suspension', strength:'200 mg/5 mL',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(70), stock:200, dailyBurn:2, safetyBuffer:15, price:65, unit:'bottle', serialCount:30 });
+
+// --- Dermatology ---
+addB({ id:'bat_mup', name:'Mupirocin', generic:'Mupirocin', form:'Ointment', strength:'2%',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(130), stock:250, dailyBurn:2, safetyBuffer:20, price:75, unit:'tube', serialCount:35 });
+addB({ id:'bat_ben_o', name:'Betamethasone', generic:'Betamethasone Valerate', form:'Cream', strength:'0.1%',
+  mfgId:'org_sunrise', holderId:'org_punepham', expiry:inDays(150), stock:200, dailyBurn:2, safetyBuffer:15, price:55, unit:'tube', serialCount:30 });
+addB({ id:'bat_per', name:'Permethrin', generic:'Permethrin', form:'Cream', strength:'5%',
+  mfgId:'org_sunrise', holderId:'org_nashik', expiry:inDays(110), stock:150, dailyBurn:1, safetyBuffer:10, price:48, unit:'tube', serialCount:20 });
+
+// --- Ophthalmology ---
+addB({ id:'bat_tim', name:'Timolol', generic:'Timolol Maleate', form:'Eye Drops', strength:'0.5%',
+  mfgId:'org_sunrise', holderId:'org_citycare', expiry:inDays(45), stock:120, dailyBurn:1, safetyBuffer:10, price:65, unit:'bottle', serialCount:20 });
+addB({ id:'bat_mox', name:'Moxifloxacin Eye', generic:'Moxifloxacin HCl', form:'Eye Drops', strength:'0.5%',
+  mfgId:'org_sunrise', holderId:'org_thane', expiry:inDays(60), stock:80, dailyBurn:1, safetyBuffer:8, price:95, unit:'bottle', serialCount:15 });
 
   // ----- serials -----
   const serials = {};

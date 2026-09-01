@@ -30,6 +30,7 @@ function ensureSchema(db) {
       strength TEXT NOT NULL, mfg_id TEXT NOT NULL, holder_id TEXT NOT NULL,
       expiry TEXT NOT NULL, stock INTEGER NOT NULL, daily_burn INTEGER NOT NULL,
       safety_buffer INTEGER NOT NULL, cold_chain INTEGER NOT NULL DEFAULT 0,
+      price REAL NOT NULL DEFAULT 0, unit TEXT NOT NULL DEFAULT 'strip',
       serial_count INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL
     );
     CREATE TABLE IF NOT EXISTS serials (
@@ -87,10 +88,10 @@ function seed(db) {
   const insOrg = db.prepare('INSERT INTO orgs VALUES (?,?,?,?,?,?,?)');
   Object.values(s.orgs).forEach((o) => insOrg.run(o.id, o.name, o.type, o.city, o.lat, o.lng, o.trustScore));
 
-  const insBatch = db.prepare('INSERT INTO batches VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+  const insBatch = db.prepare('INSERT INTO batches VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
   Object.values(s.batches).forEach((b) => insBatch.run(
     b.id, b.name, b.generic, b.form, b.strength, b.mfgId, b.holderId,
-    b.expiry, b.stock, b.dailyBurn, b.safetyBuffer, b.coldChain ? 1 : 0, b.serialCount, b.createdAt,
+    b.expiry, b.stock, b.dailyBurn, b.safetyBuffer, b.coldChain ? 1 : 0, b.price, b.unit, b.serialCount, b.createdAt,
   ));
 
   const insSerial = db.prepare('INSERT INTO serials VALUES (?,?)');

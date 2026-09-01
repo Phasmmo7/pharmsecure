@@ -13,6 +13,7 @@ export function loadState(db) {
         id: r.id, name: r.name, generic: r.generic, form: r.form, strength: r.strength,
         mfgId: r.mfg_id, holderId: r.holder_id, expiry: r.expiry, stock: r.stock,
         dailyBurn: r.daily_burn, safetyBuffer: r.safety_buffer, coldChain: !!r.cold_chain,
+        price: r.price || 0, unit: r.unit || 'strip',
         serialCount: r.serial_count, createdAt: r.created_at,
       };
     });

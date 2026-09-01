@@ -55,8 +55,8 @@ app.get('/api/me', auth, (req, res) => {
 app.get('/api/batches', auth, (_req, res) => {
   const st = loadState(db);
   res.json(Object.values(st.batches).map((b) => {
-    const { id, name, generic, form, strength, mfgId, holderId, expiry, stock, dailyBurn, safetyBuffer, coldChain } = b;
-    return { id, name, generic, form, strength, mfgId, holderId, expiry, stock, dailyBurn, safetyBuffer, coldChain };
+    const { id, name, generic, form, strength, mfgId, holderId, expiry, stock, dailyBurn, safetyBuffer, coldChain, price, unit } = b;
+    return { id, name, generic, form, strength, mfgId, holderId, expiry, stock, dailyBurn, safetyBuffer, coldChain, price, unit };
   }));
 });
 
