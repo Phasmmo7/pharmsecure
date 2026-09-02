@@ -327,7 +327,7 @@ export default function Landing() {
                         <Icon name="shield" size={26} className="text-brand-400" />
                       </div>
                     </div>
-                    <h2 className="text-2xl font-black text-mist-50 tracking-tight">Welcome Back</h2>
+                    <h2 className="text-2xl font-black text-mist-50 tracking-tight">Choose an organisation to continue</h2>
                     <p className="text-[11px] text-mist-400 mt-1.5">Authenticate to access your control center</p>
                     {/* Decorative line */}
                     <div className="mt-5 mx-auto w-16 h-px bg-gradient-to-r from-transparent via-brand-500/40 to-transparent" />
