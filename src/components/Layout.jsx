@@ -7,6 +7,8 @@ const NAV = [
   { to: '/', label: 'Dashboard', icon: 'home', group: 'main' },
   { to: '/verify', label: 'Verify', icon: 'scan', group: 'main' },
   { to: '/inventory', label: 'Inventory', icon: 'box', group: 'main' },
+  { to: '/agent', label: 'AI Agent', icon: 'sparkle', group: 'ai' },
+  { to: '/integrations', label: 'Integrations', icon: 'plug', group: 'ai' },
   { to: '/catalog', label: 'Catalog', icon: 'beaker', group: 'operations' },
   { to: '/requirements', label: 'Requirements', icon: 'alert', group: 'operations' },
   { to: '/emergency', label: 'Emergency', icon: 'truck', group: 'operations' },
@@ -17,6 +19,7 @@ const NAV = [
 
 const NAV_GROUPS = [
   { id: 'main', label: 'Overview' },
+  { id: 'ai', label: 'AI & Integrations' },
   { id: 'operations', label: 'Operations' },
   { id: 'tools', label: 'Tools' },
 ];

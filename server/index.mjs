@@ -7,6 +7,26 @@ import { openDb, verifyPassword } from './db.mjs';
 import { loadState, saveScan, saveAudit, saveTransfer, updateStatusWithNote, addTransferCustody, listAudits, addRequest, listTransfers, listRequests, statsSnapshot, issueSerials } from './store.mjs';
 import { verifyCode, matchRedistribution } from '../src/lib/engines.js';
 
+let corsairHandler = null;
+let mcpRouterHandler = null;
+try {
+  const corsairMod = await import('./corsair.mjs');
+  corsairHandler = corsairMod.toExpressHandler(corsairMod.corsair, { basePath: '/api/corsair' });
+  mcpRouterHandler = corsairMod.mcpRouter;
+  console.log('[corsair] Loaded successfully');
+} catch (e) {
+  console.warn('[corsair] Not loaded:', e.message);
+}
+
+let agentHandler = null;
+try {
+  const agentMod = await import('./agent.mjs');
+  agentHandler = agentMod;
+  console.log('[agent] Loaded successfully');
+} catch (e) {
+  console.warn('[agent] Not loaded:', e.message);
+}
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 4000;
 const SECRET = process.env.PHARMSECURE_SECRET || 'pharmsecure-hack-demo-secret';
@@ -157,6 +177,33 @@ app.post('/api/issue', auth, (req, res) => {
 app.get('/api/audits', auth, (req, res) => res.json(listAudits(db, req.user)));
 
 app.get('/api/stats', auth, (_req, res) => res.json(statsSnapshot(loadState(db))));
+
+// --- Corsair Integration Routes ---
+app.get('/api/corsair/status', auth, (_req, res) => {
+  res.json({
+    corsair: !!corsairHandler,
+    mcp: !!mcpRouterHandler,
+    agent: !!agentHandler,
+    hub: !!(process.env.CORSAIR_API_KEY && process.env.CORSAIR_SIGNING_SECRET),
+    plugins: ['github', 'slack', 'gmail'],
+  });
+});
+
+if (corsairHandler) {
+  app.use('/api/corsair', corsairHandler);
+}
+if (mcpRouterHandler) {
+  app.use('/mcp', mcpRouterHandler);
+}
+
+// --- AI Agent Routes ---
+if (agentHandler) {
+  app.post('/api/agent/chat', auth, agentHandler.handleAgentChat);
+  app.get('/api/agent/connect', auth, agentHandler.handleMcpConnect);
+  app.get('/api/agent/operations', auth, agentHandler.handleMcpOperations);
+}
+
+// --- Corsair Status ---
 
 if (existsSync(DIST)) {
   app.use(express.static(DIST));

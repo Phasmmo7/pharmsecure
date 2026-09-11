@@ -11,7 +11,15 @@
     "qr": "node scripts/generate-qrs.mjs"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.52",
+    "@corsair-dev/github": "^0.1.19",
+    "@corsair-dev/gmail": "^0.1.6",
+    "@corsair-dev/mcp": "^0.1.28",
+    "@corsair-dev/slack": "^0.1.8",
+    "ai": "^7.0.97",
+    "better-sqlite3": "^13.0.3",
     "core-js": "^3.50.0",
+    "corsair": "^0.1.130",
     "express": "^4.21.2",
     "html5-qrcode": "^2.3.8",
     "jsonwebtoken": "^9.0.2",

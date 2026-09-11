@@ -13,6 +13,8 @@ const Audits = lazy(() => import('./pages/Audits.jsx'));
 const MedicineCatalog = lazy(() => import('./pages/MedicineCatalog.jsx'));
 const StockRequirements = lazy(() => import('./pages/StockRequirements.jsx'));
 const EmergencyTransfer = lazy(() => import('./pages/EmergencyTransfer.jsx'));
+const AIAgent = lazy(() => import('./pages/AIAgent.jsx'));
+const Integrations = lazy(() => import('./pages/Integrations.jsx'));
 
 const spinner = (
   <div className="grid min-h-[40vh] place-items-center">
@@ -49,6 +51,8 @@ function Shell() {
           <Route path="/catalog" element={<MedicineCatalog />} />
           <Route path="/requirements" element={<StockRequirements />} />
           <Route path="/emergency" element={<EmergencyTransfer />} />
+          <Route path="/agent" element={<AIAgent />} />
+          <Route path="/integrations" element={<Integrations />} />
         </Routes>
       </Suspense>
     </Layout>

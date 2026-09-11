@@ -23,6 +23,8 @@ const P = {
   truck: <><path d="M3 6h11v9H3z" /><path d="M14 9h4l3 3v3h-7z" /><circle cx="7" cy="18" r="1.8" /><circle cx="17" cy="18" r="1.8" /></>,
   eye: <><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></>,
   copy: <><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></>,
+  sparkle: <><path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" /><path d="M18 14l1.04 3.18L22 18l-2.96.82L18 22l-1.04-3.18L14 18l2.96-.82L18 14z" /><path d="M5 17l.62 1.88L7.5 19.5l-1.88.62L5 22l-.62-1.88L2.5 19.5l1.88-.62L5 17z" /></>,
+  plug: <><path d="M12 22v-5" /><path d="M9 8V2" /><path d="M15 8V2" /><path d="M18 8v4a6 6 0 0 1-12 0V8" /><circle cx="12" cy="17" r="1" fill="currentColor" /></>,
 };
 
 export function Icon({ name, size = 18, className = '', strokeWidth = 1.8 }) {
